@@ -1,0 +1,25 @@
+void Heap::InsertHeap(int newthing){
+    data[last+1] = newthing;  // 将新值放在数组末尾（堆的下一位）
+    last = last + 1;          // 更新堆的大小
+    if (last == 0) return;  // 如果插入的是第一个元素，直接结束
+    int child_index = last;
+    int par_index = 0;
+    bool swapping = true;
+
+    while (swapping == true) {   // 如果需要交换，就继续循环
+        swapping = false;
+
+        if (child_index % 2 == 0) 
+            par_index = child_index / 2 - 1;  // 偶数：右孩子
+        else 
+            par_index = child_index / 2;      // 奇数：左孩子
+
+        if (par_index >= 0) {
+            if (data[child_index] > data[par_index]) {
+                swap(data[child_index], data[par_index]);
+                swapping = true;
+                child_index = par_index;  // 向上继续比较
+            }
+        }
+    }
+}

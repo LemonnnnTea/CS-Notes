@@ -1,0 +1,85 @@
+查找：
+TreeNode* search(TreeNode* root, int key) {
+    if (root == nullptr || root->key == key)
+        return root;
+    if (key < root->key)
+        return search(root->left, key);
+    else
+        return search(root->right, key);
+}
+插入：
+void Tree::Insert(int item) {
+    if (item > data) { // 插入右子树
+        if (rightptr == NULL) {
+            rightptr = new Tree(item, NULL, NULL);
+        } else {
+            rightptr->Insert(item);
+        }
+    } 
+    else if (item < data) { // 插入左子树
+        if (leftptr == NULL) {
+            leftptr = new Tree(item, NULL, NULL);
+        } else {
+            leftptr->Insert(item);
+        }
+    } 
+    else {
+        // item == data，重复了
+        printf("Error: key is not unique\n");
+        return;
+    }
+}
+
+删除：
+bool DeleteNode(Tree* nodetodelete, Tree* parent) {
+    if (nodetodelete == NULL) {
+        printf("DEL: didn't find item\n");
+        return false;
+    }
+
+    // ----------- 情况1：叶子节点 -----------
+    if (nodetodelete->leftptr == NULL && nodetodelete->rightptr == NULL) {
+        if (parent != NULL) {
+            if (parent->leftptr == nodetodelete)
+                parent->leftptr = NULL;
+            else
+                parent->rightptr = NULL;
+        }
+        delete nodetodelete;
+        return true;
+    }
+
+    // ----------- 情况2：只有一个子节点 -----------
+    else if (nodetodelete->leftptr == NULL || nodetodelete->rightptr == NULL) {
+        Tree* child = (nodetodelete->leftptr != NULL) ? nodetodelete->leftptr : nodetodelete->rightptr;
+
+        if (parent != NULL) {
+            if (parent->leftptr == nodetodelete)
+                parent->leftptr = child;
+            else
+                parent->rightptr = child;
+        } else {
+            // 根节点删除特殊处理（如主函数中单独判断）
+            *nodetodelete = *child;
+            delete child;
+        }
+        return true;
+    }
+
+    // ----------- 情况3：两个子节点（使用中序后继替换） -----------
+    else {
+        // 找中序后继（右子树中最小值）
+        Tree* successorParent = nodetodelete;
+        Tree* successor = nodetodelete->rightptr;
+        while (successor->leftptr != NULL) {
+            successorParent = successor;
+            successor = successor->leftptr;
+        }
+
+        // 用中序后继的值替换当前节点的值
+        nodetodelete->data = successor->data;
+
+        // 删除中序后继节点（它最多有一个右孩子）
+        return DeleteNode(successor, successorParent);
+    }
+}

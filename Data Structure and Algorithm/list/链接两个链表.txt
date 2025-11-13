@@ -1,0 +1,11 @@
+void Concatenate(Node* &list1, Node* list2) {
+    if (list1 == nullptr) {
+        list1 = list2;
+        return;
+    }
+    Node* current = list1;
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+    current->next = list2;
+}

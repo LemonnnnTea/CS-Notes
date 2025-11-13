@@ -1,0 +1,13 @@
+void InsertAfter(Node* head, int targetAccNum, int newAccNum, float newBalance) {
+    Node* current = head;
+    while (current != nullptr && current->accnumber != targetAccNum) {
+        current = current->next;
+    }
+    if (current != nullptr) {
+        Node* newNode = new Node;
+        newNode->accnumber = newAccNum;
+        newNode->balance = newBalance;
+        newNode->next = current->next;
+        current->next = newNode;
+    }
+}

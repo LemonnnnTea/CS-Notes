@@ -1,0 +1,23 @@
+void AddNode2(Node*& listpointer, int a, float b) {
+    Node *current;
+    current = listpointer;
+
+    // 如果链表不是空的，找到最后一个节点
+    if(current != NULL) {
+        while (current->next != NULL) {
+            current = current->next;
+        }
+    }
+
+    // 创建一个新节点
+    Node *temp = new Node;
+    temp->accnumber = a;
+    temp->balance = b;
+    temp->next = NULL;
+
+    // 将新节点连接到末尾
+    if(current != NULL)
+        current->next = temp;
+    else
+        listpointer = temp; // 原本是空链表
+}

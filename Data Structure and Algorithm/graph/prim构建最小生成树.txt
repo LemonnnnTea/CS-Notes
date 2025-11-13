@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+
+const int INF = INT_MAX;
+const int N = 100; // 最多100个节点
+
+int graph[N][N];  // 邻接矩阵
+bool visited[N];  // 是否已加入生成树
+int key[N];       // 到每个节点的最小权重
+int parent[N];    // 最小生成树中的父节点
+
+void prim(int n) {
+    fill(key, key + n, INF);
+    fill(visited, visited + n, false);
+    key[0] = 0;
+    parent[0] = -1;
+
+    for (int count = 0; count < n - 1; count++) {
+        // 找到未加入生成树中，key最小的点 u
+        int u = -1, minKey = INF;
+        for (int v = 0; v < n; v++) {
+            if (!visited[v] && key[v] < minKey) {
+                minKey = key[v];
+                u = v;
+            }
+        }
+
+        visited[u] = true;
+
+        // 更新 u 的邻居的 key 值
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] && !visited[v] && graph[u][v] < key[v]) {
+                key[v] = graph[u][v];
+                parent[v] = u;
+            }
+        }
+    }
+
+    // 输出最小生成树
+    int totalCost = 0;
+    cout << "MST 边如下:\n";
+    for (int i = 1; i < n; i++) {
+        cout << parent[i] << " - " << i << " : " << graph[parent[i]][i] << endl;
+        totalCost += graph[parent[i]][i];
+    }
+    cout << "总权重: " << totalCost << endl;
+}

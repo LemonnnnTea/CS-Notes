@@ -1,0 +1,16 @@
+void BFS(Tree* root) {
+    if (root == nullptr) return;
+    queue<Tree*> Q;
+    Q.push(root);
+
+    while (!Q.empty()) {
+        Tree* node = Q.front(); Q.pop();
+        cout << node->RootData() << " ";
+
+        Tree* child = node->Left();
+        while (child) {
+            Q.push(child);
+            child = child->Right(); // 遍历兄弟节点
+        }
+    }
+}

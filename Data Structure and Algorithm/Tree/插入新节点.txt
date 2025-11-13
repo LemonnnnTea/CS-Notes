@@ -1,0 +1,12 @@
+TreeNode* insert(TreeNode* parent, char value) {
+    TreeNode* newNode = createNode(value);
+    if (parent->leftChild == NULL) {
+        parent->leftChild = newNode;
+    } else {
+        TreeNode* temp = parent->leftChild;
+        while (temp->rightSibling != NULL)
+            temp = temp->rightSibling;
+        temp->rightSibling = newNode;
+    }
+    return newNode;
+}

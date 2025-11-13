@@ -1,0 +1,31 @@
+void Heap::DeleteRoot() {
+    if (last < 0) return;  // 空堆直接返回
+
+    unsigned int deletedvalue = data[0];
+    data[0] = data[last];     // 把最后一个元素移到堆顶
+    data[last] = 0;           // 删除（逻辑）
+    last = last - 1;
+
+    int parindex = 0;
+    int leftindex = 2 * parindex + 1;
+    int rightindex = 2 * parindex + 2;
+
+    while (leftindex <= last) {
+        int maxindex = parindex;
+
+        if (data[leftindex] > data[maxindex]) {
+            maxindex = leftindex;
+        }
+        if (rightindex <= last && data[rightindex] > data[maxindex]) {
+            maxindex = rightindex;
+        }
+
+        if (maxindex == parindex) break;
+
+        swap(data[parindex], data[maxindex]);
+
+        parindex = maxindex;
+        leftindex = 2 * parindex + 1;
+        rightindex = 2 * parindex + 2;
+    }
+}

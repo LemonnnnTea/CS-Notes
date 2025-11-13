@@ -1,0 +1,29 @@
+bool RemoveNth(Node*& listpointer, int x) {
+    Node *current, *prev;
+    current = listpointer;
+    prev = NULL;
+    int n = 0;
+
+    // 遍历链表直到第 x 个节点
+    while (current != NULL) {
+        n++;
+        if (n == x) break;
+        prev = current;
+        current = current->next;
+    }
+
+    // 没找到第 x 个节点（链表长度 < x）
+    if (current == NULL) return false;
+
+    // 删除的是第一个节点
+    if (prev == NULL) {
+        listpointer = listpointer->next;
+    } else {
+        prev->next = current->next;
+    }
+
+    // 释放内存
+    delete current;
+    return true;
+}
+

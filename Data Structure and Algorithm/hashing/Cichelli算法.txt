@@ -1,0 +1,189 @@
+ConstructHash() {
+    search(List);
+}
+
+search(List) {
+    word = first word from List;
+
+    if (g(word[first]) and g(word[last]) 已经被分配) {
+        try(word, -1, -1);  // -1表示g()值已分配，不再修改
+        if (success) {
+            search(List.next); // 递归处理下一个单词
+        } else {
+            // 无回溯，此时失败就结束
+            return failure;
+        }
+    }
+    else if (g(word[first]) 和 g(word[last]) 都未分配) {
+        for each n in possible_g_values_for_first {
+            for each m in possible_g_values_for_last {
+                if (try(word, n, m) == success) {
+                    search(List.next);
+                    return success;
+                }
+            }
+        }
+        return failure; // 全部组合尝试失败，无回溯不继续
+    }
+    else {
+        // 只有一个g值被分配的情况
+        for each n in possible_g_values_for_unassigned_letter {
+            if (try(word, assigned_value, n) == success || try(word, n, assigned_value) == success) {
+                search(List.next);
+                return success;
+            }
+        }
+        return failure;
+    }
+}
+
+try(word, a, b) {
+    if (a != -1 && b != -1) {  // g()都已分配
+        h = (length(word) + a + b) % Tsize;
+        if (h位置未被占用) {
+            reserve h;
+            return success;
+        } else {
+            return failure;
+        }
+    } else if (a == -1 || b == -1) { // 只有一个g值分配
+        assign未分配的g()值为 a 或 b;
+        h = (length(word) + g(first) + g(last)) % Tsize;
+        if (h位置未被占用) {
+            reserve h;
+            return success;
+        } else {
+            return failure;
+        }
+    } else { // 两个g值都没分配
+        assign g(first) = a;
+        assign g(last) = b;
+        h = (length(word) + a + b) % Tsize;
+        if (h位置未被占用) {
+            reserve h;
+            return success;
+        } else {
+            return failure;
+        }
+    }
+}
+
+Cichelli算法 是一种用于构造 最小完美哈希函数（Minimal Perfect Hash Function, MPH） 的方法。它特别适合关键字集较小且已知的情况，如编译器中的保留字表（reserved keywords）。该算法的目标是构造一个无冲突、空间最优的哈希函数。
+
+🧠 一、什么是最小完美哈希函数（MPHF）？
+完美哈希函数：输入集合中任意两个不同的键都不会冲突（即不会映射到相同的槽位）。
+
+最小：哈希表大小刚好等于键的数量（没有多余空间）。
+
+🧩 二、Cichelli算法的思想
+Cichelli 使用如下形式的哈希函数：
+
+ℎ
+(
+word
+)
+=
+(
+length
++
+𝑔
+(
+first letter
+)
++
+𝑔
+(
+last letter
+)
+)
+m
+o
+d
+ 
+ 
+𝑇
+h(word)=(length+g(first letter)+g(last letter))modT
+其中：
+
+length 是单词的长度；
+
+g(c) 是某个字符（首字母或尾字母）对应的一个整数值（要人为分配）；
+
+T 是关键字数量（即表的大小）；
+
+h(word) 是哈希值（索引）。
+
+🛠️ 三、Cichelli算法步骤（带详细解释）
+步骤 1：统计频率
+统计所有关键字的首字母和尾字母出现的频率（出现越多者，越先处理）。
+
+步骤 2：排序关键字
+将关键字按照 (首字母频率 + 尾字母频率) 的降序排列。
+
+步骤 3：递归分配 g()
+尝试为首尾字母分配整数 g(c)，从 0 开始尝试，目标是：
+
+h(word) 没有冲突；
+
+每个字母最多只赋值一次；
+
+如果发生冲突，则回溯并尝试不同的值。
+
+步骤 4：生成表
+一旦所有关键字都找到对应的唯一哈希值（无冲突），构建哈希表，完成算法。
+
+📋 示例：构造包含以下关键字的最小完美哈希函数
+text
+复制代码
+if, then, else, begin, end, while, do
+1️⃣ 统计字母频率：
+字母	首字母频率	尾字母频率
+i	1	0
+f	0	1
+t	1	0
+n	2	2
+e	2	3
+b	1	0
+d	1	2
+w	1	0
+o	0	1
+
+2️⃣ 排序关键字（频率高的先）：
+按照首+尾字母频率降序排列：else, end, then, begin, while, do, if
+
+3️⃣ 构造哈希函数：
+尝试为 g(c) 分配值，使得每个词计算出的哈希值唯一。
+
+举例：
+
+text
+复制代码
+g(e) = 2
+g(l) = 0
+length("else") = 4
+h("else") = 4 + g(e) + g(e) = 4 + 2 + 2 = 8
+重复此过程，对其他单词赋值，直到所有 h(word) 唯一。
+
+📦 四、Cichelli算法的优点
+生成最小哈希表，节省空间；
+
+构造的哈希函数 简单高效（O(1))；
+
+特别适用于 关键字静态已知 的情况，如编译器关键字、命令词等。
+
+⚠️ 缺点与挑战
+算法使用 回溯法（递归 + 回退），在关键字数量大时效率低；
+
+手动分配 g() 值较繁琐；
+
+对动态数据集不适用（新增关键字需重新生成函数）。
+
+✅ 总结
+项目	内容
+适用范围	已知的小型关键字集合
+哈希函数形式	h(word) = len + g(first) + g(last) mod N
+特点	无冲突（完美）、紧凑（最小）、快速
+技术核心	g 值的合理分配 + 递归回溯 + 基于结构的排序
+不适合的情况	数据动态变化频繁，或关键字集规模巨大
+
+如需我帮你用 C++ 或 Python 实现一个完整的 Cichelli算法示例程序，也可以告诉我关键字列表，我可以直接生成。需要吗？

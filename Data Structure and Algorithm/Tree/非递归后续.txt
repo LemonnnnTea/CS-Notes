@@ -1,0 +1,19 @@
+void postorderTraversal(TreeNode* root) {
+    if (root == nullptr) return;
+
+    std::stack<TreeNode*> stk1, stk2;
+    stk1.push(root);
+
+    while (!stk1.empty()) {
+        TreeNode* node = stk1.top(); stk1.pop();
+        stk2.push(node);
+
+        if (node->left) stk1.push(node->left);
+        if (node->right) stk1.push(node->right);
+    }
+
+    while (!stk2.empty()) {
+        std::cout << stk2.top()->val << " ";
+        stk2.pop();
+    }
+}

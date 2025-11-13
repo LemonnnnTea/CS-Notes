@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int accnumber;
+    float balance;
+    struct Node *next;
+} Node;
+
+int main() {
+    Node *head = (Node *)malloc(sizeof(Node));
+    head->accnumber = 123;
+    head->balance = 456.78;
+    head->next = NULL;
+
+    printf("账号：%d，余额：%.2f\n", head->accnumber, head->balance);
+
+    free(head);
+    return 0;
+}

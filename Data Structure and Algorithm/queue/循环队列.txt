@@ -1,0 +1,18 @@
+void Queue::Join(float newthing) {
+    if (count == Qmax) {
+        cout << "Queue overflow!" << endl;
+        return;
+    }
+    last = (last + 1) % Qmax;
+    data[last] = newthing;
+    count++;
+}
+
+void Queue::Leave() {
+    if (count == 0) {
+        cout << "Queue underflow!" << endl;
+        return;
+    }
+    first = (first + 1) % Qmax;
+    count--;
+}

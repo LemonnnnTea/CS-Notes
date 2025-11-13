@@ -1,0 +1,6 @@
+void deleteSubtree(TreeNode* node) {
+    if (node == NULL) return;
+    deleteSubtree(node->leftChild);
+    deleteSubtree(node->rightSibling);
+    free(node);  // 释放当前节点
+}

@@ -1,0 +1,108 @@
+#define HASHSIZE 10
+
+struct somedata {
+    int id;
+    // 你可以加其他成员，比如名字等
+};
+
+class Hash {
+private:
+    somedata hashtable[HASHSIZE];
+    bool occupied[HASHSIZE];  // 标记槽位是否被占用
+    bool deleted[HASHSIZE];   // 标记槽位是否被删除过
+    int size;
+
+public:
+    Hash() {
+        size = 0;
+        for(int i=0; i<HASHSIZE; i++) {
+            occupied[i] = false;
+            deleted[i] = false;
+            hashtable[i].id = -1; // 初始化一个无效id
+        }
+    }
+
+    // 简单哈希函数：取模
+    int hash(int id) {
+        return id % HASHSIZE;
+    }
+
+    // 线性探测函数
+    int rehash(int oldHash, int i) {
+        return (oldHash + i) % HASHSIZE;
+    }
+
+    // 插入数据，返回是否成功
+    bool insertdata(somedata &data) {
+        if (size == HASHSIZE) return false; // 表满了
+
+        int key = hash(data.id);
+        int i = 0;
+        int index;
+
+        while (i < HASHSIZE) {
+            index = rehash(key, i);
+            if (!occupied[index] || deleted[index]) {
+                hashtable[index] = data;
+                occupied[index] = true;
+                deleted[index] = false;
+                size++;
+                return true;
+            }
+            i++;
+        }
+        return false; // 没有空位
+    }
+
+    // 删除数据，返回是否成功
+    bool removedata(int id) {
+        int key = hash(id);
+        int i = 0;
+        int index;
+
+        while (i < HASHSIZE) {
+            index = rehash(key, i);
+            if (!occupied[index] && !deleted[index]) {
+                return false; // 没找到
+            }
+            if (occupied[index] && hashtable[index].id == id) {
+                occupied[index] = false;
+                deleted[index] = true;
+                size--;
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    // 搜索数据，返回是否找到
+    bool searchtable(int id) {
+        int key = hash(id);
+        int i = 0;
+        int index;
+
+        while (i < HASHSIZE) {
+            index = rehash(key, i);
+            if (!occupied[index] && !deleted[index]) {
+                return false; // 找不到
+            }
+            if (occupied[index] && hashtable[index].id == id) {
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    // 打印表中数据
+    void printtable() {
+        for (int i = 0; i < HASHSIZE; i++) {
+            if (occupied[i]) {
+                std::cout << "Index " << i << ": ID = " << hashtable[i].id << std::endl;
+            } else {
+                std::cout << "Index " << i << ": empty" << std::endl;
+            }
+        }
+    }
+};

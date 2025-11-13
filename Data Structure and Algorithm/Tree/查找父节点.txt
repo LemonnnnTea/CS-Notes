@@ -1,0 +1,12 @@
+TreeNode* findParent(TreeNode* root, TreeNode* target) {
+    if (root == NULL || target == NULL) return NULL;
+
+    TreeNode* child = root->leftChild;
+    while (child != NULL) {
+        if (child == target) return root;
+        TreeNode* parent = findParent(child, target);
+        if (parent != NULL) return parent;
+        child = child->rightSibling;
+    }
+    return NULL;
+}

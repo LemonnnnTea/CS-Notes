@@ -1,0 +1,28 @@
+bool Hash::searchtable(int id) {
+    int attempts = 1;  // 第一次访问也要算一次
+    int hashed = hash(id);
+
+    if (occupied[hashed] && hashtable[hashed].id == id) {
+        printf("Found record in first attempt\n");
+        return true;
+    }
+
+    // 线性探测
+    for (int i = 1; i < HASHSIZE; i++) {
+        int rehashed = rehash(hashed, i);
+        attempts++;
+
+        if (!occupied[rehashed] && !deleted[rehashed]) {
+            // 空槽且没被删除，说明找不到
+            break;
+        }
+
+        if (occupied[rehashed] && hashtable[rehashed].id == id) {
+            printf("Found record in %d attempts\n", attempts);
+            return true;
+        }
+    }
+
+    printf("Record is NOT in the table (after %d attempts)\n", attempts);
+    return false;
+}

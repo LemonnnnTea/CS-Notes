@@ -1,0 +1,14 @@
+TreeNode* buildExpressionTree(vector<string> rpn) {
+    stack<TreeNode*> S;
+    for (string token : rpn) {
+        if (isOperand(token)) {
+            S.push(new TreeNode(token));
+        } else {
+            TreeNode* right = S.top(); S.pop();
+            TreeNode* left = S.top(); S.pop();
+            TreeNode* node = new TreeNode(token, left, right);
+            S.push(node);
+        }
+    }
+    return S.top();
+}

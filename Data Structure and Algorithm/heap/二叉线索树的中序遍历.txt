@@ -1,0 +1,22 @@
+void InOrder(Tree *T) {
+    Tree *current;
+
+    if (T->isEmpty()) {
+        return;
+    }
+
+    // 1. 先找到中序遍历的第一个节点（最左下的节点）
+    current = T;
+    while (current->LeftThread() == false) {
+        current = current->Left();
+    }
+
+    // 2. 开始遍历，从第一个节点开始，循环访问所有节点
+    while (current->Right() != current) {  // 这里 current->Right() == current 通常表示结束条件
+        // 访问当前节点（你这里没写访问操作，可以插入打印或处理代码）
+        cout << current->RootData() << " ";
+
+        // 通过NextNode函数找到当前节点的中序后继节点
+        current = NextNode(current);
+    }
+}

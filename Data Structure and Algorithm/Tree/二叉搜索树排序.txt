@@ -1,0 +1,6 @@
+void InOrder(Tree* root) {
+    if (root == nullptr) return;
+    InOrder(root->leftptr);
+    std::cout << root->data << " ";
+    InOrder(root->rightptr);
+}

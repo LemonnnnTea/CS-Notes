@@ -1,0 +1,12 @@
+void DFS(Tree* root) {
+    if (root == nullptr) return;
+    stack<Tree*> S;
+    S.push(root);
+
+    while (!S.empty()) {
+        Tree* node = S.top(); S.pop();
+        cout << node->RootData() << " ";
+        if (node->Right()) S.push(node->Right());
+        if (node->Left()) S.push(node->Left());
+    }
+}

@@ -1,0 +1,15 @@
+#include <queue>
+void radixSort(int arr[], int n) {
+    int maxVal = *std::max_element(arr, arr + n);
+    for (int exp = 1; maxVal / exp > 0; exp *= 10) {
+        std::queue<int> buckets[10];
+        for (int i = 0; i < n; i++)
+            buckets[(arr[i] / exp) % 10].push(arr[i]);
+        int idx = 0;
+        for (int i = 0; i < 10; i++)
+            while (!buckets[i].empty()) {
+                arr[idx++] = buckets[i].front();
+                buckets[i].pop();
+            }
+    }
+}

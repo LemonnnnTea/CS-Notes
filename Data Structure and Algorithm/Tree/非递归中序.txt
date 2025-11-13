@@ -1,0 +1,19 @@
+#include <stack>
+#include <iostream>
+
+void inorderTraversal(TreeNode* root) {
+    std::stack<TreeNode*> stk;
+    TreeNode* current = root;
+
+    while (current != nullptr || !stk.empty()) {
+        while (current != nullptr) {
+            stk.push(current);        // 一直向左走
+            current = current->left;
+        }
+
+        current = stk.top(); stk.pop();
+        std::cout << current->val << " ";  // 访问当前节点
+
+        current = current->right;     // 转向右子树
+    }
+}

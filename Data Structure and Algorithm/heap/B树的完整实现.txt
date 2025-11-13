@@ -1,0 +1,71 @@
+void BTree::insert(int k) {
+    if (root == nullptr) {
+        root = new BTreeNode(true);
+        root->keys[0] = k;
+        root->numKeys = 1;
+    } else {
+        if (root->numKeys == M - 1) {
+            // 如果 root 已满，则分裂
+            BTreeNode* s = new BTreeNode(false);
+            s->children[0] = root;
+            s->splitChild(0, root);
+
+            int i = (s->keys[0] < k) ? 1 : 0;
+            s->children[i]->insertNonFull(k);
+
+            root = s; // 新 root
+        } else {
+            root->insertNonFull(k);
+        }
+    }
+}
+void BTreeNode::insertNonFull(int k) {
+    int i = numKeys - 1;
+
+    if (isLeaf) {
+        while (i >= 0 && keys[i] > k) {
+            keys[i + 1] = keys[i];
+            i--;
+        }
+        keys[i + 1] = k;
+        numKeys++;
+    } else {
+        while (i >= 0 && keys[i] > k)
+            i--;
+
+        i++;
+
+        if (children[i]->numKeys == M - 1) {
+            splitChild(i, children[i]);
+            if (keys[i] < k)
+                i++;
+        }
+        children[i]->insertNonFull(k);
+    }
+}
+void BTreeNode::splitChild(int i, BTreeNode* y) {
+    BTreeNode* z = new BTreeNode(y->isLeaf);
+    z->numKeys = M / 2 - 1;
+
+    // 把 y 后半部分 key 和 child 移到 z
+    for (int j = 0; j < M / 2 - 1; j++)
+        z->keys[j] = y->keys[j + M / 2];
+
+    if (!y->isLeaf) {
+        for (int j = 0; j < M / 2; j++)
+            z->children[j] = y->children[j + M / 2];
+    }
+
+    y->numKeys = M / 2 - 1;
+
+    for (int j = numKeys; j >= i + 1; j--)
+        children[j + 1] = children[j];
+
+    children[i + 1] = z;
+
+    for (int j = numKeys - 1; j >= i; j--)
+        keys[j + 1] = keys[j];
+
+    keys[i] = y->keys[M / 2 - 1];
+    numKeys++;
+}

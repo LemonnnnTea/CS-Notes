@@ -1,0 +1,17 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int accnumber;
+    float balance;
+    Node *next;
+};
+
+void PrintList(Node* listpointer) {
+    Node* current = listpointer; // Step 1 & 2
+
+    while (current != nullptr) { // Step 3
+        cout << "Account: " << current->accnumber << ", Balance: " << current->balance << endl;
+        current = current->next;
+    }
+}

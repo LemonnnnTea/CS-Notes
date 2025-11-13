@@ -1,0 +1,13 @@
+void Split(Node* head, int position, Node* &firstHalf, Node* &secondHalf) {
+    firstHalf = head;
+    Node* current = head;
+    for (int i = 1; i < position && current != nullptr; i++) {
+        current = current->next;
+    }
+    if (current != nullptr) {
+        secondHalf = current->next;
+        current->next = nullptr;
+    } else {
+        secondHalf = nullptr;
+    }
+}

@@ -1,0 +1,88 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <string>
+using namespace std;
+
+// 定义关键字列表
+vector<string> keywords = {"if", "then", "else", "begin", "end", "while", "do"};
+
+// 哈希表，用于存放哈希值是否被占用
+vector<string> hash_table(7); // 哈希表大小 = 关键字数量
+
+// 记录每个字母对应的g值
+unordered_map<char, int> g_value;
+
+// 判断某个哈希值是否被占用
+bool is_used[7] = {false};
+
+// 统计每个字母（首字母或尾字母）出现频率
+unordered_map<char, int> freq;
+
+// 计算哈希值函数 h(word) = len + g(first) + g(last) % T
+int hash_func(const string& word) {
+    char first = word.front();         // 首字母
+    char last = word.back();          // 尾字母
+    return (word.length() + g_value[first] + g_value[last]) % keywords.size();
+}
+
+// 递归尝试为每个单词分配哈希值（带回溯）
+bool assign(int index) {
+    if (index == keywords.size()) return true; // 所有单词处理完毕，成功
+
+    string word = keywords[index];
+    char first = word.front();
+    char last = word.back();
+
+    bool f_assigned = g_value.count(first); // 首字母是否已分配
+    bool l_assigned = g_value.count(last);  // 尾字母是否已分配
+
+    int max_try = keywords.size(); // g 值最大尝试次数
+
+    for (int g1 = 0; g1 < (f_assigned ? 1 : max_try); ++g1) {
+        if (!f_assigned) g_value[first] = g1; // 为首字母赋g值
+
+        for (int g2 = 0; g2 < (l_assigned ? 1 : max_try); ++g2) {
+            if (!l_assigned) g_value[last] = g2; // 为尾字母赋g值
+
+            int h = hash_func(word);
+            if (!is_used[h]) { // 哈希值未被占用
+                is_used[h] = true;         // 标记为已用
+                hash_table[h] = word;      // 保存关键字
+
+                if (assign(index + 1)) return true; // 递归尝试下一个单词
+
+                is_used[h] = false;        // 回溯
+            }
+
+            if (!l_assigned) g_value.erase(last); // 清除g值回溯
+        }
+        if (!f_assigned) g_value.erase(first); // 清除g值回溯
+    }
+    return false; // 所有尝试失败
+}
+
+int main() {
+    // 统计每个字母出现频率（首或尾）
+    for (const auto& word : keywords) {
+        freq[word.front()]++;
+        freq[word.back()]++;
+    }
+
+    // 可以按频率对关键字排序（此处略去简化）
+
+    // 调用递归函数开始分配哈希值
+    if (assign(0)) {
+        cout << "哈希分配成功，结果如下：\n";
+        for (int i = 0; i < hash_table.size(); ++i) {
+            cout << i << ": " << hash_table[i] << endl;
+        }
+        cout << "\ng值分配：\n";
+        for (const auto& pair : g_value) {
+            cout << pair.first << " = " << pair.second << endl;
+        }
+    } else {
+        cout << "哈希分配失败，无法构建完美哈希函数。\n";
+    }
+    return 0;
+}
